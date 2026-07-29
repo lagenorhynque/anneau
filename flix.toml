@@ -1,0 +1,6 @@
+[package]
+name        = "anneau"
+description = "Flix HTTP server"
+version     = "0.1.0"
+flix        = "0.75.1"
+authors     = ["Kent OHASHI"]
