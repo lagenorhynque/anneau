@@ -19,55 +19,43 @@ pub mod Anneau.Router.Codec {
 
     pub def wrap(
         name: String,
-        wrapDecode: a -> b,
-        wrapEncode: b -> a,
+        wrapDecode: {decode = a -> b},
+        wrapEncode: {encode = b -> a},
         c: Codec[a]
     ): Codec[b] =
-        Codec({
-            name = name,
-            decode = s -> Option.map(wrapDecode, decode(c, s)),
-            encode = v -> encode(c, wrapEncode(v))
-        })
+        refine(
+            name,
+            decode = wrapDecode#decode >> Some,
+            encode = wrapEncode#encode,
+            c
+        )
 
     pub def refine(
         name: String,
-        wrapDecode: a -> Option[b],
-        wrapEncode: b -> a,
+        wrapDecode: {decode = a -> Option[b]},
+        wrapEncode: {encode = b -> a},
         c: Codec[a]
     ): Codec[b] =
         Codec({
             name = name,
-            decode = s -> Option.flatMap(wrapDecode, decode(c, s)),
-            encode = v -> encode(c, wrapEncode(v))
+            decode = s -> Option.flatMap(wrapDecode#decode, decode(c, s)),
+            encode = v -> encode(c, wrapEncode#encode(v))
         })
 
-    pub def string(): Codec[String] =
+    def stringConvertible(name: String): Codec[v] with FromString[v], ToString[v] =
         Codec({
-            name = "String",
-            decode = Some,
-            encode = identity
-        })
-
-    pub def int32(): Codec[Int32] =
-        Codec({
-            name = "Int32",
+            name = name,
             decode = FromString.fromString,
             encode = ToString.toString
         })
 
-    pub def int64(): Codec[Int64] =
-        Codec({
-            name = "Int64",
-            decode = FromString.fromString,
-            encode = ToString.toString
-        })
+    pub def string(): Codec[String] = stringConvertible("String")
 
-    pub def bool(): Codec[Bool] =
-        Codec({
-            name = "Bool",
-            decode = FromString.fromString,
-            encode = ToString.toString
-        })
+    pub def int32(): Codec[Int32] = stringConvertible("Int32")
+
+    pub def int64(): Codec[Int64] = stringConvertible("Int64")
+
+    pub def bool(): Codec[Bool] = stringConvertible("Bool")
 
     mod SegmentCodec {
         use Anneau.Router.Codec
