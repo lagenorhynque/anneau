@@ -97,7 +97,7 @@ pub mod Anneau.Router.Path {
         })
 
     pub def matchPath(p: Path[h, t], segs: Segments): Option[h -> t] =
-        match Path.parse(p)(segs) {
+        match Path.parse(p, segs) {
             case Some((f, Nil)) => Some(f)
             case _ => None
         }
@@ -106,7 +106,7 @@ pub mod Anneau.Router.Path {
         matchPath(p, split(uri))
 
     pub def link(p: Path[h, String]): h =
-        Path.print(p)(join)
+        Path.print(p, join)
 
     pub def describe(p: Path[h, t]): String =
         pattern(p)
