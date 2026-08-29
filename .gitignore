@@ -5,6 +5,7 @@ artifact/
 build/
 lib/
 crash_report_*.txt
+__pycache__/
 
 # Visual Studio Code
 

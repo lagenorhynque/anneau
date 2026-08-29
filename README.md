@@ -12,6 +12,9 @@ Routing is a statically typed DSL. A path is a value whose type records the para
 it captures, and that one value both matches an incoming request and generates URIs, so
 the two can never drift apart.
 
+The API documentation is at <https://lagenorhynque.github.io/anneau/>, generated from
+the sources on every push to `master`.
+
 ## Status
 
 Early. Milestone 1 is done: `Anneau.Router.Codec` and `Anneau.Router.Path` are

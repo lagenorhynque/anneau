@@ -20,11 +20,7 @@ jobs:
 
       - name: Read Flix version from flix.toml
         id: flix
-        run: |
-          version=$(grep -E '^"?flix"?[[:space:]]*=' flix.toml \
-            | head -n1 \
-            | sed -E 's/.*"([^"]+)"[[:space:]]*$/\1/')
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(.github/scripts/flix-version.sh)" >> "$GITHUB_OUTPUT"
 
       - name: Download Flix
         run: |
