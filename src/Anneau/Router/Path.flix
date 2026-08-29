@@ -7,10 +7,10 @@ pub mod Anneau.Router.Path {
     use Anneau.Router.Path.PatternSegment.{Literal, Param}
 
     pub enum Path[h, t]({
-         pattern = Pattern,
-         parse = Parse[h, t],
-         print = Print[h, t]}
-    )
+        pattern = Pattern,
+        parse = Parse[h, t],
+        print = Print[h, t]
+    })
 
     mod Pattern {
         use Anneau.Router.Path.PatternSegment
@@ -43,8 +43,8 @@ pub mod Anneau.Router.Path {
         let Path({print | _}) = p;
         print
 
-    enum ParamName(String) with  Eq, Order, ToString
-    enum CodecName(String) with  Eq, Order, ToString
+    enum ParamName(String) with Eq, Order, ToString
+    enum CodecName(String) with Eq, Order, ToString
 
     enum PatternSegment with Eq, Order, ToString {
         case Literal(String)

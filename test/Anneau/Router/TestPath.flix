@@ -24,8 +24,8 @@ mod Anneau.Router.TestPath {
     mod Parsing {
         use Anneau.Router.Path
         use Anneau.Router.Path.root
-        use Anneau.Router.TestPath.{capturedPair, capturedValue, todoPath, userPostPath}
         use Anneau.Router.TestPath.ToDoId.ToDoId
+        use Anneau.Router.TestPath.{capturedPair, capturedValue, todoPath, userPostPath}
         use Assert.{assertEq, assertNone}
 
         @Test
@@ -78,8 +78,8 @@ mod Anneau.Router.TestPath {
     mod Printing {
         use Anneau.Router.Path
         use Anneau.Router.Path.root
-        use Anneau.Router.TestPath.{todoPath, userPostPath}
         use Anneau.Router.TestPath.ToDoId.ToDoId
+        use Anneau.Router.TestPath.{todoPath, userPostPath}
         use Assert.assertEq
 
         @Test
@@ -161,8 +161,8 @@ mod Anneau.Router.TestPath {
         use Anneau.Router.Codec
         use Anneau.Router.Path
         use Anneau.Router.Path.{$$, literal, param, root}
-        use Anneau.Router.TestPath.{capturedPair, capturedValue, todoPath}
         use Anneau.Router.TestPath.ToDoId.ToDoId
+        use Anneau.Router.TestPath.{capturedPair, capturedValue, todoPath}
         use Assert.{assertEq, assertNone}
 
         @Test
