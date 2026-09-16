@@ -2,5 +2,5 @@
 name        = "anneau"
 description = "An HTTP server library for Flix"
 version     = "0.0.1"
-flix        = "0.75.3"
+flix        = "0.76.0"
 authors     = ["Kent OHASHI"]
