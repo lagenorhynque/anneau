@@ -1,7 +1,7 @@
 # Anneau: typed routing design notes
 
 Scope: `Anneau.Router.*`
-Assumes: Flix 0.75.3
+Assumes: Flix 0.76.0
 
 This document is the specification. Where it and the implementation disagree, decide
 explicitly which one to change. Section 6 records the Milestone 0 language spikes and
@@ -244,11 +244,12 @@ A submodule that callers are meant to reach into gets its own file and is declar
 `pub`, as `SegmentCodec` is: since Flix 0.76.0 a submodule without `pub` genuinely hides
 its members from everything outside its parent (§10), and a `pub` one has to live in the
 file its path names. A submodule that is genuinely internal, such as `Pattern`, stays
-unexported and inline. The tests mirror the same layout.
+unexported and inline.
 
 ## 6. Milestone 0: results of the language spikes
 
-Measured on Flix 0.75.3.
+Measured on Flix 0.75.3 and re-measured on 0.76.0. S2 and S5 have spikes of their own;
+S1, S3 and S4 are exercised by the library itself, so a green `check` re-confirms them.
 
 ### S1. Symbolic operators — confirmed
 
@@ -372,23 +373,31 @@ The intent is to seal the constructor of `Path` so that values can only be built
 the combinators. A `Path` whose `pattern` disagrees with its `parse` and `print` would
 let the route table analysis of M4 draw conclusions about something that never runs.
 
-Measured on Flix 0.75.3, the sealing **applies to references to the type only**.
+Measured on Flix 0.76.0, the sealing holds for everything **except the companion**.
 
 | Attempted from an outside module | Result |
 |---|---|
 | naming the types `PatternSegment` / `Pattern` in a signature | `Resolution Error [E0459] inaccessible enum` |
+| calling `Pattern.segments(...)` or `Pattern.append(...)` | `Resolution Error [E2544] inaccessible module` |
 | forging one with `Path({pattern = Pattern(...), parse = ..., print = ...})` | accepted |
 | taking one apart with `let Path({pattern \| _}) = p` | accepted |
 | taking one apart in a `match` without naming the type, `case Literal(s) => ...` | accepted |
 
-In other words, the constructors of an enum remain reachable even where the enum type
-itself cannot be named from outside. "Build them only through the combinators" is
-therefore **a convention, not a guarantee**. What is guaranteed is that `pattern` cannot
-be named from outside, which is enough to keep the representation free to change later.
+The second row is new in 0.76.0. Until then `pub` on a submodule did not affect whether
+its members could be reached, so the plain functions of `mod Pattern` were callable from
+anywhere; now a submodule without `pub` really does hide them.
 
-Whether this is intended in Flix or an oversight has not been established. Whether to
-work around it — wrapping constructors in functions, mixing an opaque function type into
-the fields — is a decision for the point at which M4 starts.
+What survives is the companion. `Pattern` inside `mod Pattern` names the enum, and a
+`pub enum` carries its own visibility regardless of the module it sits in, so the
+constructor is reachable by that route and the forging rows still stand. That reading is
+consistent rather than accidental — every declaration answers for its own `pub` — but it
+does mean "build them only through the combinators" remains **a convention, not a
+guarantee**.
+
+The gap is narrower than it was, and the remaining question is only whether to close it:
+by wrapping the constructor in a function, or by mixing an opaque type into the fields.
+That is a decision for the point at which M4 starts, when the route table analysis
+begins to rest on `pattern` telling the truth.
 
 ### Others
 
