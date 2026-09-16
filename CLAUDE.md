@@ -54,7 +54,15 @@ Tests must be pure — no server, no sockets.
 
 - Module paths mirror the file layout: `src/Anneau/Router/Path.flix` defines
   `pub mod Anneau.Router.Path`.
-- Private by default; export deliberately.
+- Private by default; export deliberately. That now holds for submodules too:
+  since Flix 0.76.0 a submodule without `pub` hides its members from everything
+  outside its parent. A submodule callers are meant to reach into therefore gets
+  `pub` and its own file, as `Anneau.Router.Codec.SegmentCodec` does; one that is
+  genuinely internal, such as `Anneau.Router.Path.Pattern`, stays unexported and
+  inline. Beware that a companion — a declaration sharing its name with its
+  module — carries its own visibility, so a `pub` trait or enum inside an
+  unexported module stays reachable and hides the mistake until someone adds a
+  plain `def` beside it.
 - Build `Path` values only through the combinators, so that the `pattern` field
   can never drift from `parse`/`print`. Flix does not enforce this: an enum's
   *type* can be made inaccessible outside its module, but its *constructor*
@@ -101,7 +109,7 @@ Tests must be pure — no server, no sockets.
 
 ## Formatting
 
-Flix has a `flix format` command, but as of 0.75.3 it is a stub: it exits
+Flix has a `flix format` command, but as of 0.76.0 it is still a stub: it exits
 successfully and rewrites nothing, so a clean run is no evidence that a file is
 formatted. Until it does something, the layout is kept by reading. Prefer
 consistency with what is already here over any outside habit; once the formatter
