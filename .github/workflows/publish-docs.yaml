@@ -40,8 +40,14 @@ jobs:
           curl -fsSL -o flix.jar \
             "https://github.com/flix/flix/releases/download/v${{ steps.flix.outputs.version }}/flix.jar"
 
+      # `flix doc` documents everything it compiles and has no flag to narrow
+      # that, so the types and instances defined by the tests would be published
+      # as part of the API — `SegmentCodec[ToDoId]` and the like. Set the tests
+      # aside for the run rather than deleting them.
       - name: Generate the documentation
-        run: java -jar flix.jar doc
+        run: |
+          mv test "$RUNNER_TEMP/test"
+          java -jar flix.jar doc
 
       - name: Assemble the site
         run: |
