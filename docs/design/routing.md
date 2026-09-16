@@ -219,7 +219,9 @@ src/
   Anneau/
     Router.flix                   Endpoint, Router                        (M3)
     Router/
-      Codec.flix                  Codec, SegmentCodec trait               (M1) implemented
+      Codec.flix                  Codec                                   (M1) implemented
+      Codec/
+        SegmentCodec.flix         SegmentCodec trait and its instances    (M1) implemented
       Path.flix                   PatternSegment, Path, $$, link          (M1) implemented
       Analysis.flix               route table analysis in Datalog         (M4)
     Http.flix                     Method, Status, Body, Request, Response (M2)
@@ -230,11 +232,19 @@ test/
   Anneau/
     Router/
       TestCodec.flix              implemented
+      Codec/
+        TestSegmentCodec.flix     implemented
       TestPath.flix               implemented
 ```
 
 The server lives in `Anneau.Server.*`, so that `Anneau.Router` stays a pure module with
 no dependency on Java interop.
+
+A submodule that callers are meant to reach into gets its own file and is declared
+`pub`, as `SegmentCodec` is: since Flix 0.76.0 a submodule without `pub` genuinely hides
+its members from everything outside its parent (§10), and a `pub` one has to live in the
+file its path names. A submodule that is genuinely internal, such as `Pattern`, stays
+unexported and inline. The tests mirror the same layout.
 
 ## 6. Milestone 0: results of the language spikes
 
